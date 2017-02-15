@@ -1,5 +1,5 @@
 {
-  "name": "desmart/padlock",
+  "name": "desmart/laravel-padlock",
   "description": "Script locking mechanism for Laravel. Enables blocking scripts execution for given period, for example to avoid cron jobs overlapping",
   "authors": [
     {
