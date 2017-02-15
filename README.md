@@ -1,7 +1,12 @@
-# Padlock Script Locker
+# Padlock Script Locker for Laravel framework
 This package allows for easily temporarily locking your scripts execution.
  
 It might come in handy in cases such as CRON jobs that connect with unreliable APIS, where you're not 100% sure if your script won't fail at some point.
+
+## Requirements
+This package requires:
+* PHP >= 7.0.0
+* Laravel 5.3.x
 
 ## Installation
 1. `$ composer require desmart/padlock`
