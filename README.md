@@ -1,4 +1,7 @@
 # Padlock Script Locker for Laravel framework
+
+[![Build Status](https://travis-ci.org/DeSmart/laravel-padlock.svg?branch=master)](https://travis-ci.org/DeSmart/laravel-padlock)
+
 This package allows for easily temporarily locking your scripts execution.
  
 It might come in handy in cases such as CRON jobs that connect with unreliable APIS, where you're not 100% sure if your script won't fail at some point.
