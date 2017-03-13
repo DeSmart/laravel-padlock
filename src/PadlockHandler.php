@@ -12,13 +12,16 @@ class PadlockHandler
     /** @var PadlockDriverInterface */
     private $driver;
 
+    private $enabled;
+
     /**
      * PadlockHandler constructor.
      * @param PadlockDriverInterface $driver
      */
-    public function __construct(PadlockDriverInterface $driver)
+    public function __construct(PadlockDriverInterface $driver, bool $enabled)
     {
         $this->driver = $driver;
+        $this->enabled = (bool)$enabled;
     }
 
     /**
@@ -26,6 +29,10 @@ class PadlockHandler
      */
     public function lock(string $name)
     {
+        if (false === $this->isEnabled()) {
+            return;
+        }
+
         if (true === $this->isLocked($name)) {
             throw new PadlockExistsException("Padlock already locked for script '{$name}'");
         }
@@ -40,6 +47,10 @@ class PadlockHandler
      */
     public function isLocked(string $name, int $ttl = null)
     {
+        if (false === $this->isEnabled()) {
+            return false;
+        }
+
         $padlock = $this->driver->get($name);
 
         if (null === $padlock) {
@@ -70,6 +81,10 @@ class PadlockHandler
      */
     public function unlock(string $name)
     {
+        if (false === $this->isEnabled()) {
+            return;
+        }
+
         $this->driver->unlock(new Padlock($name));
     }
 
@@ -79,5 +94,13 @@ class PadlockHandler
     public function getAll()
     {
         return $this->driver->getAll();
+    }
+
+    /**
+     * @return bool
+     */
+    private function isEnabled()
+    {
+        return $this->enabled;
     }
 }

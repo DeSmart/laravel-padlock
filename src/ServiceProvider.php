@@ -15,7 +15,9 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->singleton(PadlockHandler::class, function($app) use ($config) {
             $driver = $app->make($config['driver']);
 
-            return new PadlockHandler($driver);
+            $enabled = array_key_exists('enabled', $config) ? (bool)$config['enabled'] : true;
+
+            return new PadlockHandler($driver, $enabled);
         });
     }
 

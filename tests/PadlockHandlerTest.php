@@ -20,9 +20,9 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
     /**
      * @return PadlockHandler
      */
-    public function makeHandler()
+    public function makeHandler(bool $enabled)
     {
-        return new PadlockHandler($this->driver->reveal());
+        return new PadlockHandler($this->driver->reveal(), $enabled);
     }
 
     /**
@@ -35,7 +35,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
         $this->driver->get($scriptName)->willReturn(null);
         $this->driver->lock(Argument::type(Padlock::class))->shouldBeCalled();
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $handler->lock($scriptName);
     }
@@ -53,7 +53,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(PadlockExistsException::class);
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $handler->lock($scriptName);
     }
@@ -67,7 +67,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->driver->get($scriptName)->willReturn(null);
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $this->assertFalse($handler->isLocked($scriptName));
     }
@@ -82,7 +82,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->driver->get($scriptName)->willReturn($existingLock);
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $this->assertTrue($handler->isLocked($scriptName));
         $this->assertTrue($handler->isLocked($scriptName, 0));
@@ -99,7 +99,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->driver->get($scriptName)->willReturn($existingLock);
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $this->assertTrue($handler->isLocked($scriptName, 3600));
     }
@@ -115,7 +115,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
         $this->driver->get($scriptName)->willReturn($existingLock);
         $this->driver->unlock(Argument::type(Padlock::class))->shouldBeCalled();
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $this->assertFalse($handler->isLocked($scriptName, 3599));
     }
@@ -133,7 +133,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(\InvalidArgumentException::class);
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $this->assertFalse($handler->isLocked($scriptName, -3));
     }
@@ -147,7 +147,7 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
 
         $this->driver->unlock(Argument::type(Padlock::class))->shouldBeCalled();
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $handler->unlock($scriptName);
     }
@@ -160,11 +160,54 @@ class PadlockHandlerTest extends \PHPUnit_Framework_TestCase
         $collection = collect([new Padlock('Foo'), new Padlock('Bar')]);
         $this->driver->getAll()->shouldBeCalled()->willReturn($collection);
 
-        $handler = $this->makeHandler();
+        $handler = $this->makeHandler(true);
 
         $result = $handler->getAll();
 
         $this->assertSame($collection, $result);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_lock_if_disabled()
+    {
+        $scriptName = 'Foo';
+
+        $this->driver->get($scriptName)->shouldNotBeCalled();
+        $this->driver->lock(Argument::type(Padlock::class))->shouldNotBeCalled();
+
+        $handler = $this->makeHandler(false);
+
+        $handler->lock($scriptName);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_unlock_if_disabled()
+    {
+        $scriptName = 'Foo';
+
+        $this->driver->unlock(Argument::type(Padlock::class))->shouldNotBeCalled();
+
+        $handler = $this->makeHandler(false);
+
+        $handler->unlock($scriptName);
+    }
+
+    /**
+     * @test
+     */
+    public function it_does_not_check_lock_if_disabled()
+    {
+        $scriptName = 'Foo';
+
+        $this->driver->get(Argument::any())->shouldNotBeCalled();
+
+        $handler = $this->makeHandler(false);
+
+        $handler->isLocked($scriptName);
     }
 }
 
