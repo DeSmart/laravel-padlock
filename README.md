@@ -9,10 +9,10 @@ It might come in handy in cases such as CRON jobs that connect with unreliable A
 ## Requirements
 This package requires:
 * PHP >= 7.0.0
-* Laravel 5.3.x
+* Laravel 5.3 || 5.4
 
 ## Installation
-1. `$ composer require desmart/padlock`
+1. `$ composer require desmart/laravel-padlock`
 2. Add `DeSmart\Padlock\ServiceProvider` to your `config/app.php`:
 ```
         /*
