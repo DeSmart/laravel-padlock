@@ -10,7 +10,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
     {
-        $config = config('padlock');
+        $config = $this->getConfig();
 
         $this->app->singleton(PadlockHandler::class, function($app) use ($config) {
             $driver = $app->make($config['driver']);
@@ -19,6 +19,14 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
             return new PadlockHandler($driver, $enabled);
         });
+    }
+
+    /**
+     * @return array
+     */
+    private function getConfig()
+    {
+        return config('padlock') ?: include(__DIR__ . '/../config/padlock.php');
     }
 
     public function boot()

@@ -20,6 +20,8 @@ This package requires:
          */
         DeSmart\Padlock\ServiceProvider::class,
 ```
+3. `$ php artisan vendor:publish --provider="DeSmart\Padlock\ServiceProvider"`
+4. Configure in `config/padlock.php` - choose between Database and Filesystem driver
 
 ## Example usage
 

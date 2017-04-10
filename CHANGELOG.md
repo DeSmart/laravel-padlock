@@ -15,3 +15,7 @@ _Released: 2017-03-13_
 ## 1.2.0
 _Released: 2017-04-05_
 * Updated dependencies to allow working with Laravel 5.4
+
+## 1.2.1
+_Released: 2017-04-10_
+* Fixed ServiceProvider behavior before vendor:publish
