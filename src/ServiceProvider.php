@@ -4,7 +4,6 @@ namespace DeSmart\Padlock;
 
 use DeSmart\Padlock\Console\ListCommand;
 use DeSmart\Padlock\Console\UnlockCommand;
-use DeSmart\Padlock\Driver\DatabaseDriver;
 
 class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
@@ -31,12 +30,6 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
-        $config = config('padlock');
-
-        if (DatabaseDriver::class === $config['driver']) {
-            $this->loadMigrationsFrom(__DIR__ . '/../migrations');
-        }
-
         if (true === $this->app->runningInConsole()) {
             $this->commands([
                 UnlockCommand::class,
@@ -44,8 +37,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
             ]);
         }
 
-        $this->publishes([
-            __DIR__ . '/../config/padlock.php' => config_path('padlock.php')
-        ]);
+        $this->publishes([__DIR__ . '/../config/padlock.php' => config_path('padlock.php')], 'config');
+        $this->publishes([__DIR__ . '/../migrations/' => database_path('migrations')], 'migrations');
     }
 }

@@ -19,3 +19,7 @@ _Released: 2017-04-05_
 ## 1.2.1
 _Released: 2017-04-10_
 * Fixed ServiceProvider behavior before vendor:publish
+
+## 1.2.2
+_Released: 2017-04-10_
+* Fixed publishing migrations in ServiceProvider
